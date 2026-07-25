@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import base64
 import json
+from typing import Any
 
 import httpx
 
@@ -22,7 +23,7 @@ def _client(handler) -> HttpClient:
 
 class TestEmails:
     def test_send_posts_email_send_and_returns_data(self) -> None:
-        captured: dict = {}
+        captured: dict[str, Any] = {}
 
         def handler(request: httpx.Request) -> httpx.Response:
             captured["url"] = str(request.url)
@@ -49,7 +50,7 @@ class TestEmails:
         assert captured[0] == "https://api.test/email/messages/e1"
 
     def test_send_converts_bytes_attachment_to_base64(self) -> None:
-        captured: dict = {}
+        captured: dict[str, Any] = {}
         pdf = b"%PDF-1.4"
 
         def handler(request: httpx.Request) -> httpx.Response:
@@ -81,7 +82,7 @@ class TestEmails:
         ]
 
     def test_send_passes_base64_string_attachment_unchanged(self) -> None:
-        captured: dict = {}
+        captured: dict[str, Any] = {}
 
         def handler(request: httpx.Request) -> httpx.Response:
             captured["body"] = json.loads(request.content)
@@ -102,7 +103,7 @@ class TestEmails:
         ]
 
     def test_send_omits_attachments_key_when_none_given(self) -> None:
-        captured: dict = {}
+        captured: dict[str, Any] = {}
 
         def handler(request: httpx.Request) -> httpx.Response:
             captured["body"] = json.loads(request.content)

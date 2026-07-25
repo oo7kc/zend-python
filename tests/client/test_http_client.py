@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+from typing import Any
 
 import httpx
 
@@ -22,7 +23,7 @@ def _client(transport: httpx.MockTransport, **kwargs) -> HttpClient:
 
 class TestHttpClientRequest:
     def test_sends_api_key_and_snake_case_body(self) -> None:
-        captured: dict = {}
+        captured: dict[str, Any] = {}
 
         def handler(request: httpx.Request) -> httpx.Response:
             captured["url"] = str(request.url)
@@ -129,14 +130,19 @@ class TestHttpClientRequest:
                 },
             )
 
-        res = _client(httpx.MockTransport(handler)).request("POST", "/email/send", cast_to=dict)
+        res = _client(httpx.MockTransport(handler)).request(
+            "POST", "/email/send", cast_to=dict
+        )
         assert res.error is None
-        assert res.data == {
+        assert res.data is not None
+        assert isinstance(res.data, dict)
+        data: dict[str, Any] = res.data
+        assert data == {
             "id": "e1",
             "user_id": "u1",
             "from": "a",
             "to": "b",
             "status": "pending",
         }
-        assert "_id" not in res.data  # type: ignore[operator]
-        assert "__v" not in res.data  # type: ignore[operator]
+        assert "_id" not in data
+        assert "__v" not in data

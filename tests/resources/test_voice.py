@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+from typing import Any
 
 import httpx
 
@@ -21,7 +22,7 @@ def _client(handler) -> HttpClient:
 
 class TestVoice:
     def test_send_posts_voice_send_and_snake_cases_nested_fallback(self) -> None:
-        captured: dict = {}
+        captured: dict[str, Any] = {}
 
         def handler(request: httpx.Request) -> httpx.Response:
             captured["body"] = json.loads(request.content)
@@ -50,7 +51,7 @@ class TestVoice:
         }
 
     def test_upload_sends_multipart_to_voice_upload(self) -> None:
-        captured: dict = {}
+        captured: dict[str, Any] = {}
 
         def handler(request: httpx.Request) -> httpx.Response:
             captured["url"] = str(request.url)
