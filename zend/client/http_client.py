@@ -5,7 +5,7 @@ from typing import Any, TypeVar
 import httpx
 from pydantic import BaseModel, TypeAdapter
 
-from zend.client.error import ApplicationError, TimeoutError, ZendError
+from zend.client.error import ApplicationError, ZendError, ZendTimeoutError
 from zend.common.normalize import normalize_response
 from zend.common.types import ZendResponse
 from zend.version import VERSION
@@ -105,7 +105,9 @@ class HttpClient:
         except httpx.TimeoutException:
             return ZendResponse(
                 data=None,
-                error=TimeoutError(f"Request timed out after {int(self._timeout * 1000)}ms"),
+                error=ZendTimeoutError(
+                    f"Request timed out after {int(self._timeout * 1000)}ms"
+                ),
             )
         except httpx.HTTPError as exc:
             return ZendResponse(data=None, error=ApplicationError(str(exc)))
@@ -190,7 +192,9 @@ class AsyncHttpClient:
         except httpx.TimeoutException:
             return ZendResponse(
                 data=None,
-                error=TimeoutError(f"Request timed out after {int(self._timeout * 1000)}ms"),
+                error=ZendTimeoutError(
+                    f"Request timed out after {int(self._timeout * 1000)}ms"
+                ),
             )
         except httpx.HTTPError as exc:
             return ZendResponse(data=None, error=ApplicationError(str(exc)))

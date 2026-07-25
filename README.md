@@ -213,7 +213,7 @@ if sms.error:
 print(sms.data.id)
 ```
 
-`ZendError` subclasses include `APIError`, `BadRequestError`, `AuthenticationError`, `RateLimitError`, `ServerError`, `TimeoutError`, and `ApplicationError`. Attributes:
+`ZendError` subclasses include `APIError`, `BadRequestError`, `AuthenticationError`, `RateLimitError`, `ServerError`, `ZendTimeoutError`, and `ApplicationError`. Attributes:
 
 - `name` — e.g. `"api_error"`, `"timeout"`, `"application_error"`
 - `status_code` — HTTP status when available

@@ -9,8 +9,8 @@ from zend.client.error import (
     PermissionDeniedError,
     RateLimitError,
     ServerError,
-    TimeoutError,
     ZendError,
+    ZendTimeoutError,
 )
 from zend.common.types import ListParams, ZendResponse
 from zend.resources.emails.types import Email, EmailAttachment, EmailList, SendEmailOptions
@@ -83,7 +83,6 @@ __all__ = [
     "TemplateChannelVariant",
     "TemplateList",
     "TemplateVariable",
-    "TimeoutError",
     "VERSION",
     "VoiceBatch",
     "VoiceBatchDetail",
@@ -97,4 +96,5 @@ __all__ = [
     "Zend",
     "ZendError",
     "ZendResponse",
+    "ZendTimeoutError",
 ]

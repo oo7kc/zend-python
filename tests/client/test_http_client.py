@@ -6,7 +6,7 @@ import json
 
 import httpx
 
-from zend import ApplicationError, TimeoutError
+from zend import ApplicationError, ZendTimeoutError
 from zend.client.http_client import HttpClient
 
 
@@ -112,7 +112,7 @@ class TestHttpClientRequest:
 
         res = _client(httpx.MockTransport(handler)).request("GET", "/messages")
         assert res.data is None
-        assert isinstance(res.error, TimeoutError)
+        assert isinstance(res.error, ZendTimeoutError)
         assert res.error.name == "timeout"
         assert "5000ms" in str(res.error)
 

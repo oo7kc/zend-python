@@ -118,8 +118,11 @@ class ServerError(APIError):
     pass
 
 
-class TimeoutError(ZendError):
-    """Request exceeded the configured timeout."""
+class ZendTimeoutError(ZendError):
+    """Request exceeded the configured timeout.
+
+    Named ``ZendTimeoutError`` so it does not shadow the builtin ``TimeoutError``.
+    """
 
     def __init__(
         self,

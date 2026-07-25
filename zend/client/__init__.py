@@ -9,8 +9,8 @@ from zend.client.error import (
     PermissionDeniedError,
     RateLimitError,
     ServerError,
-    TimeoutError,
     ZendError,
+    ZendTimeoutError,
 )
 from zend.client.http_client import AsyncHttpClient, HttpClient
 
@@ -25,6 +25,6 @@ __all__ = [
     "PermissionDeniedError",
     "RateLimitError",
     "ServerError",
-    "TimeoutError",
     "ZendError",
+    "ZendTimeoutError",
 ]
