@@ -1,0 +1,30 @@
+"""HTTP transport and error types — mirrors zend-node/src/client/."""
+
+from zend.client.error import (
+    APIError,
+    ApplicationError,
+    AuthenticationError,
+    BadRequestError,
+    NotFoundError,
+    PermissionDeniedError,
+    RateLimitError,
+    ServerError,
+    TimeoutError,
+    ZendError,
+)
+from zend.client.http_client import AsyncHttpClient, HttpClient
+
+__all__ = [
+    "APIError",
+    "ApplicationError",
+    "AsyncHttpClient",
+    "AuthenticationError",
+    "BadRequestError",
+    "HttpClient",
+    "NotFoundError",
+    "PermissionDeniedError",
+    "RateLimitError",
+    "ServerError",
+    "TimeoutError",
+    "ZendError",
+]

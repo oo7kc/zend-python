@@ -5,10 +5,10 @@ from typing import Any, TypeVar
 import httpx
 from pydantic import BaseModel, TypeAdapter
 
-from zend._errors import ApplicationError, TimeoutError, ZendError
-from zend._normalize import normalize_response
-from zend._response import ZendResponse
-from zend._version import VERSION
+from zend.client.error import ApplicationError, TimeoutError, ZendError
+from zend.common.normalize import normalize_response
+from zend.common.types import ZendResponse
+from zend.version import VERSION
 
 T = TypeVar("T")
 

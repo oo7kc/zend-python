@@ -6,8 +6,8 @@ from typing import Any
 
 import httpx
 
-from zend._client import AsyncHttpClient, HttpClient
-from zend._constants import DEFAULT_BASE_URL, DEFAULT_TIMEOUT
+from zend.client.http_client import AsyncHttpClient, HttpClient
+from zend.common.constants import DEFAULT_BASE_URL, DEFAULT_TIMEOUT
 from zend.resources.emails import AsyncEmails, Emails
 from zend.resources.messages import AsyncMessages, Messages
 from zend.resources.templates import AsyncTemplates, Templates
