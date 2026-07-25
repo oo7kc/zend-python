@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+from typing import Any
 
 import httpx
 
@@ -21,7 +22,7 @@ def _client(handler) -> HttpClient:
 
 class TestMessages:
     def test_send_posts_messages_preserves_template_params_keys(self) -> None:
-        captured: dict = {}
+        captured: dict[str, Any] = {}
 
         def handler(request: httpx.Request) -> httpx.Response:
             captured["body"] = json.loads(request.content)

@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Any
+from typing import Any, overload
 
 from zend.client.http_client import AsyncHttpClient, HttpClient
 from zend.common.types import ListParams, ZendResponse
@@ -18,6 +18,14 @@ class Messages:
     def __init__(self, client: HttpClient) -> None:
         self._client = client
 
+    @overload
+    def send(self, options: SendMessageOptions) -> ZendResponse[SendMessageResult]:
+        ...
+
+    @overload
+    def send(self, **kwargs: Any) -> ZendResponse[SendMessageResult]:
+        ...
+
     def send(
         self, options: SendMessageOptions | None = None, **kwargs: Any
     ) -> ZendResponse[SendMessageResult]:
@@ -28,6 +36,14 @@ class Messages:
             json_body=body,
             cast_to=SendMessageResult,
         )
+
+    @overload
+    def send_bulk(self, options: BulkMessageOptions) -> ZendResponse[BulkMessageResult]:
+        ...
+
+    @overload
+    def send_bulk(self, **kwargs: Any) -> ZendResponse[BulkMessageResult]:
+        ...
 
     def send_bulk(
         self, options: BulkMessageOptions | None = None, **kwargs: Any
@@ -42,6 +58,14 @@ class Messages:
 
     def get(self, id: str) -> ZendResponse[Message]:
         return self._client.request("GET", f"/messages/{id}", cast_to=Message)
+
+    @overload
+    def list(self, params: ListParams) -> ZendResponse[MessageList]:
+        ...
+
+    @overload
+    def list(self, **kwargs: Any) -> ZendResponse[MessageList]:
+        ...
 
     def list(self, params: ListParams | None = None, **kwargs: Any) -> ZendResponse[MessageList]:
         query = ListParams.model_validate(params or kwargs) if (params or kwargs) else None
@@ -63,6 +87,14 @@ class AsyncMessages:
     def __init__(self, client: AsyncHttpClient) -> None:
         self._client = client
 
+    @overload
+    async def send(self, options: SendMessageOptions) -> ZendResponse[SendMessageResult]:
+        ...
+
+    @overload
+    async def send(self, **kwargs: Any) -> ZendResponse[SendMessageResult]:
+        ...
+
     async def send(
         self, options: SendMessageOptions | None = None, **kwargs: Any
     ) -> ZendResponse[SendMessageResult]:
@@ -73,6 +105,16 @@ class AsyncMessages:
             json_body=body,
             cast_to=SendMessageResult,
         )
+
+    @overload
+    async def send_bulk(
+        self, options: BulkMessageOptions
+    ) -> ZendResponse[BulkMessageResult]:
+        ...
+
+    @overload
+    async def send_bulk(self, **kwargs: Any) -> ZendResponse[BulkMessageResult]:
+        ...
 
     async def send_bulk(
         self, options: BulkMessageOptions | None = None, **kwargs: Any
@@ -87,6 +129,14 @@ class AsyncMessages:
 
     async def get(self, id: str) -> ZendResponse[Message]:
         return await self._client.request("GET", f"/messages/{id}", cast_to=Message)
+
+    @overload
+    async def list(self, params: ListParams) -> ZendResponse[MessageList]:
+        ...
+
+    @overload
+    async def list(self, **kwargs: Any) -> ZendResponse[MessageList]:
+        ...
 
     async def list(
         self, params: ListParams | None = None, **kwargs: Any

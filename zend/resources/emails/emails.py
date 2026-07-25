@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import base64
-from typing import Any
+from typing import Any, overload
 
 from zend.client.http_client import AsyncHttpClient, HttpClient
 from zend.common.types import ListParams, ZendResponse
@@ -29,6 +29,14 @@ class Emails:
     def __init__(self, client: HttpClient) -> None:
         self._client = client
 
+    @overload
+    def send(self, options: SendEmailOptions) -> ZendResponse[Email]:
+        ...
+
+    @overload
+    def send(self, **kwargs: Any) -> ZendResponse[Email]:
+        ...
+
     def send(self, options: SendEmailOptions | None = None, **kwargs: Any) -> ZendResponse[Email]:
         body = SendEmailOptions.model_validate(options or kwargs)
         return self._client.request(
@@ -40,6 +48,14 @@ class Emails:
 
     def get(self, id: str) -> ZendResponse[Email]:
         return self._client.request("GET", f"/email/messages/{id}", cast_to=Email)
+
+    @overload
+    def list(self, params: ListParams) -> ZendResponse[EmailList]:
+        ...
+
+    @overload
+    def list(self, **kwargs: Any) -> ZendResponse[EmailList]:
+        ...
 
     def list(self, params: ListParams | None = None, **kwargs: Any) -> ZendResponse[EmailList]:
         query = ListParams.model_validate(params or kwargs) if (params or kwargs) else None
@@ -55,6 +71,14 @@ class AsyncEmails:
     def __init__(self, client: AsyncHttpClient) -> None:
         self._client = client
 
+    @overload
+    async def send(self, options: SendEmailOptions) -> ZendResponse[Email]:
+        ...
+
+    @overload
+    async def send(self, **kwargs: Any) -> ZendResponse[Email]:
+        ...
+
     async def send(
         self, options: SendEmailOptions | None = None, **kwargs: Any
     ) -> ZendResponse[Email]:
@@ -68,6 +92,14 @@ class AsyncEmails:
 
     async def get(self, id: str) -> ZendResponse[Email]:
         return await self._client.request("GET", f"/email/messages/{id}", cast_to=Email)
+
+    @overload
+    async def list(self, params: ListParams) -> ZendResponse[EmailList]:
+        ...
+
+    @overload
+    async def list(self, **kwargs: Any) -> ZendResponse[EmailList]:
+        ...
 
     async def list(
         self, params: ListParams | None = None, **kwargs: Any
