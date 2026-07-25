@@ -1,6 +1,5 @@
 """Shared helpers — mirrors zend-node/src/common/."""
 
-from zend.common.case import to_snake_case, to_snake_key
 from zend.common.constants import DEFAULT_BASE_URL, DEFAULT_TIMEOUT
 from zend.common.normalize import normalize_response
 from zend.common.types import ListParams, ZendBaseModel, ZendResponse
@@ -12,6 +11,4 @@ __all__ = [
     "ZendBaseModel",
     "ZendResponse",
     "normalize_response",
-    "to_snake_case",
-    "to_snake_key",
 ]

@@ -13,13 +13,14 @@ from zend.version import VERSION
 T = TypeVar("T")
 
 
-def _dump_body(body: Any, pass_through: list[str] | None = None) -> Any:
+def _dump_body(body: Any) -> Any:
     """Serialize a request body to snake_case wire JSON.
 
     Pydantic models dump with aliases where set (e.g. ``from_`` → ``from``).
-    Nested keys under ``pass_through`` fields are left untouched.
+    Nested maps such as ``template_params`` keep caller key casing as-is —
+    Pydantic leaves ``dict[str, Any]`` values untouched (no Node-style
+    ``passThrough`` needed on the Python wire path).
     """
-    del pass_through  # nested keys already preserved by model_dump / raw dicts
     if isinstance(body, BaseModel):
         data = body.model_dump(by_alias=True, exclude_none=True)
     elif isinstance(body, dict):
@@ -86,7 +87,6 @@ class HttpClient:
         *,
         query: dict[str, Any] | None = None,
         json_body: Any = None,
-        pass_through: list[str] | None = None,
         files: Any = None,
         cast_to: type[T] | TypeAdapter[T] | None = None,
     ) -> ZendResponse[T]:
@@ -98,7 +98,7 @@ class HttpClient:
         if files is not None:
             kwargs["files"] = files
         elif json_body is not None:
-            kwargs["json"] = _dump_body(json_body, pass_through)
+            kwargs["json"] = _dump_body(json_body)
 
         try:
             response = self._client.request(**kwargs)
@@ -173,7 +173,6 @@ class AsyncHttpClient:
         *,
         query: dict[str, Any] | None = None,
         json_body: Any = None,
-        pass_through: list[str] | None = None,
         files: Any = None,
         cast_to: type[T] | TypeAdapter[T] | None = None,
     ) -> ZendResponse[T]:
@@ -185,7 +184,7 @@ class AsyncHttpClient:
         if files is not None:
             kwargs["files"] = files
         elif json_body is not None:
-            kwargs["json"] = _dump_body(json_body, pass_through)
+            kwargs["json"] = _dump_body(json_body)
 
         try:
             response = await self._client.request(**kwargs)

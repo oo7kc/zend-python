@@ -40,7 +40,6 @@ class TestHttpClientRequest:
                 "template_params": {"firstName": "J"},
                 "to": "+1",
             },
-            pass_through=["template_params"],
             cast_to=dict,
         )
 

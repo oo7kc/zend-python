@@ -13,8 +13,6 @@ from zend.resources.messages.types import (
     SendMessageResult,
 )
 
-_PASS_THROUGH = ["template_params"]
-
 
 class Messages:
     def __init__(self, client: HttpClient) -> None:
@@ -28,7 +26,6 @@ class Messages:
             "POST",
             "/messages",
             json_body=body,
-            pass_through=_PASS_THROUGH,
             cast_to=SendMessageResult,
         )
 
@@ -40,7 +37,6 @@ class Messages:
             "POST",
             "/messages/bulk",
             json_body=body,
-            pass_through=_PASS_THROUGH,
             cast_to=BulkMessageResult,
         )
 
@@ -75,7 +71,6 @@ class AsyncMessages:
             "POST",
             "/messages",
             json_body=body,
-            pass_through=_PASS_THROUGH,
             cast_to=SendMessageResult,
         )
 
@@ -87,7 +82,6 @@ class AsyncMessages:
             "POST",
             "/messages/bulk",
             json_body=body,
-            pass_through=_PASS_THROUGH,
             cast_to=BulkMessageResult,
         )
 
