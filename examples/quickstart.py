@@ -1,4 +1,4 @@
-"""Quickstart walkthrough mirroring examples/quickstart.ts in @usezend/node."""
+"""Quickstart walkthrough of the Zend SDK."""
 
 from __future__ import annotations
 

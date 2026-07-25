@@ -1,4 +1,9 @@
-"""Official Python client for the Zend messaging platform."""
+"""Experimental Python client for the Zend messaging platform.
+
+This is a development SDK created for evaluation. It may be integrated into
+the official Zend project ecosystem at a later time. Currently maintained as
+a reference implementation.
+"""
 
 from zend.client.error import (
     APIError,

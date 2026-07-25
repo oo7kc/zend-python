@@ -10,8 +10,7 @@ def _is_plain_dict(value: Any) -> bool:
 def normalize_response(value: Any) -> Any:
     """Map MongoDB ``_id`` → ``id`` and drop ``__v``, recursively.
 
-    Mirrors ``src/common/normalize.ts`` in @usezend/node. Unlike the Node SDK,
-    we do **not** camelCase — Python models use snake_case matching the wire.
+    In Python, we use snake_case matching the wire format.
     """
     if isinstance(value, list):
         return [normalize_response(v) for v in value]

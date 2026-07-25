@@ -29,7 +29,7 @@ def _resolve_base_url(base_url: str | None) -> str:
 
 
 class Zend:
-    """Synchronous Zend API client."""
+    """Synchronous Zend API client (experimental development version)."""
 
     _client: HttpClient
     emails: Emails
@@ -69,7 +69,7 @@ class Zend:
 
 
 class AsyncZend:
-    """Asynchronous Zend API client."""
+    """Asynchronous Zend API client (experimental development version)."""
 
     _client: AsyncHttpClient
     emails: AsyncEmails

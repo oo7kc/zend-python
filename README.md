@@ -1,6 +1,8 @@
 # usezend
 
-Official Python client for the [Zend](https://tryzend.dev) messaging platform. Send SMS, WhatsApp, email, and voice messages — and manage message templates — from a single, typed client.
+> **Note:** This is an experimental Python SDK developed for evaluation. Currently maintained as a development reference.
+
+Python client for the [Zend](https://tryzend.dev) messaging platform. Send SMS, WhatsApp, email, and voice messages — and manage message templates — from a single, typed client.
 
 📚 **[Read the docs →](https://tryzend.com/docs)**
 
@@ -38,7 +40,7 @@ zend = Zend(
 )
 ```
 
-> **Timeouts are in seconds** (default `30.0`). This differs from `@usezend/node`, which takes milliseconds.  
+> **Timeouts are in seconds** (default `30.0`).  
 > `base_url` defaults to `https://api.tryzend.com`.
 
 Prefer a context manager so the underlying HTTP connection pool is closed cleanly:
