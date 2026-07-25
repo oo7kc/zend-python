@@ -4,7 +4,7 @@ from typing import Any, Literal
 
 from pydantic import AliasChoices, Field
 
-from zend.types.common import ZendBaseModel
+from zend.common.types import ZendBaseModel
 
 Channel = Literal["sms", "whatsapp"]
 MessageStatus = Literal[

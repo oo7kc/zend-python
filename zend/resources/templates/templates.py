@@ -2,9 +2,9 @@ from __future__ import annotations
 
 from typing import Any
 
-from zend._client import AsyncHttpClient, HttpClient
-from zend._response import ZendResponse
-from zend.types.templates import ListTemplatesParams, Template, TemplateList
+from zend.client.http_client import AsyncHttpClient, HttpClient
+from zend.common.types import ZendResponse
+from zend.resources.templates.types import ListTemplatesParams, Template, TemplateList
 
 
 class Templates:

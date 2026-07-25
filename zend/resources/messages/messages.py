@@ -2,10 +2,9 @@ from __future__ import annotations
 
 from typing import Any
 
-from zend._client import AsyncHttpClient, HttpClient
-from zend._response import ZendResponse
-from zend.types.common import ListParams
-from zend.types.messages import (
+from zend.client.http_client import AsyncHttpClient, HttpClient
+from zend.common.types import ListParams, ZendResponse
+from zend.resources.messages.types import (
     BulkMessageOptions,
     BulkMessageResult,
     Message,

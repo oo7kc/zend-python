@@ -4,7 +4,7 @@ from typing import Any
 
 from pydantic import AliasChoices, Field
 
-from zend.types.common import ZendBaseModel
+from zend.common.types import ZendBaseModel
 
 
 def _alias(*names: str) -> AliasChoices:

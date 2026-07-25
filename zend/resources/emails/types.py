@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from pydantic import AliasChoices, Field
 
-from zend.types.common import ZendBaseModel
+from zend.common.types import ZendBaseModel
 
 
 class EmailAttachment(ZendBaseModel):

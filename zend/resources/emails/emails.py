@@ -3,10 +3,9 @@ from __future__ import annotations
 import base64
 from typing import Any
 
-from zend._client import AsyncHttpClient, HttpClient
-from zend._response import ZendResponse
-from zend.types.common import ListParams
-from zend.types.emails import Email, EmailList, SendEmailOptions
+from zend.client.http_client import AsyncHttpClient, HttpClient
+from zend.common.types import ListParams, ZendResponse
+from zend.resources.emails.types import Email, EmailList, SendEmailOptions
 
 
 def _encode_attachments(options: SendEmailOptions) -> dict[str, Any]:
