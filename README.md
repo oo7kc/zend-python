@@ -28,17 +28,18 @@ The API key can also be supplied via the `ZEND_API_KEY` environment variable:
 zend = Zend()
 ```
 
-Override the base URL or request timeout (in **seconds**) — or set `ZEND_BASE_URL`:
+Override the base URL or request timeout — or set `ZEND_BASE_URL`:
 
 ```python
 zend = Zend(
     "sent_live_...",
     base_url="https://staging.api.tryzend.com",
-    timeout=30.0,
+    timeout=30.0,  # seconds
 )
 ```
 
-> **Note:** `base_url` defaults to `https://api.tryzend.com`, and `timeout` defaults to 30s.
+> **Timeouts are in seconds** (default `30.0`). This differs from `@usezend/node`, which takes milliseconds.  
+> `base_url` defaults to `https://api.tryzend.com`.
 
 Prefer a context manager so the underlying HTTP connection pool is closed cleanly:
 
