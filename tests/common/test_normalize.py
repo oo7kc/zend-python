@@ -1,4 +1,4 @@
-"""normalize_response tests — mirrors zend-node/test/common/normalize.test.ts."""
+"""normalize_response tests."""
 
 from __future__ import annotations
 

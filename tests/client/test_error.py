@@ -1,4 +1,4 @@
-"""ZendError tests — mirrors zend-node/test/client/error.test.ts."""
+"""ZendError tests."""
 
 from __future__ import annotations
 

@@ -1,4 +1,4 @@
-"""Facade tests — mirrors zend-node/test/zend.test.ts."""
+"""Facade tests for Zend and AsyncZend clients."""
 
 from __future__ import annotations
 

@@ -1,4 +1,4 @@
-"""HttpClient tests — mirrors zend-node/test/client/http-client.test.ts."""
+"""HttpClient tests."""
 
 from __future__ import annotations
 

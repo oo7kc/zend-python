@@ -1,4 +1,4 @@
-"""Shared types — mirrors zend-node/src/common/types.ts (plus Pydantic base)."""
+"""Shared types and response envelopes."""
 
 from __future__ import annotations
 

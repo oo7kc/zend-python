@@ -1,4 +1,4 @@
-"""Emails resource — mirrors zend-node/test/resources/emails.test.ts."""
+"""Emails resource tests."""
 
 from __future__ import annotations
 

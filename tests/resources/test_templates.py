@@ -1,4 +1,4 @@
-"""Templates resource — mirrors zend-node/test/resources/templates.test.ts."""
+"""Templates resource tests."""
 
 from __future__ import annotations
 

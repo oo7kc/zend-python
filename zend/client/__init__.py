@@ -1,4 +1,4 @@
-"""HTTP transport and error types — mirrors zend-node/src/client/."""
+"""HTTP transport and error types."""
 
 from zend.client.error import (
     APIError,

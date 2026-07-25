@@ -1,4 +1,4 @@
-"""Smoke test — mirrors zend-node/test/smoke.test.ts."""
+"""Smoke test for basic client initialization."""
 
 
 def test_tooling_runs() -> None:

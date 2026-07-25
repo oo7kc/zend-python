@@ -1,4 +1,4 @@
-"""Shared helpers — mirrors zend-node/src/common/."""
+"""Shared helpers and utilities."""
 
 from zend.common.constants import DEFAULT_BASE_URL, DEFAULT_TIMEOUT
 from zend.common.normalize import normalize_response

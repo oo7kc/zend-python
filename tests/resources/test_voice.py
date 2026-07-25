@@ -1,4 +1,4 @@
-"""Voice resource — mirrors zend-node/test/resources/voice.test.ts."""
+"""Voice resource tests."""
 
 from __future__ import annotations
 
