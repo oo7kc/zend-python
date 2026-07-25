@@ -6,7 +6,7 @@ import json
 
 import httpx
 
-from zend._client import HttpClient
+from zend.client.http_client import HttpClient
 from zend.resources.messages import Messages
 
 

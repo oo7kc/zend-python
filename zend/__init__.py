@@ -1,6 +1,6 @@
 """Official Python client for the Zend messaging platform."""
 
-from zend._errors import (
+from zend.client.error import (
     APIError,
     ApplicationError,
     AuthenticationError,
@@ -12,33 +12,31 @@ from zend._errors import (
     TimeoutError,
     ZendError,
 )
-from zend._response import ZendResponse
-from zend._version import VERSION
-from zend.client import AsyncZend, Zend
-from zend.types import (
+from zend.common.types import ListParams, ZendResponse
+from zend.resources.emails.types import Email, EmailAttachment, EmailList, SendEmailOptions
+from zend.resources.messages.types import (
     BulkMessageItem,
     BulkMessageOptions,
     BulkMessageResult,
     Channel,
     DeliveryAttempt,
     DeliveryPriority,
-    Email,
-    EmailAttachment,
-    EmailList,
-    ListParams,
-    ListTemplatesParams,
     Message,
     MessageList,
     MessageStatus,
     Priority,
-    SendEmailOptions,
     SendMessageOptions,
     SendMessageResult,
-    SendVoiceOptions,
+)
+from zend.resources.templates.types import (
+    ListTemplatesParams,
     Template,
     TemplateChannelVariant,
     TemplateList,
     TemplateVariable,
+)
+from zend.resources.voice.types import (
+    SendVoiceOptions,
     VoiceBatch,
     VoiceBatchDetail,
     VoiceBatchList,
@@ -49,6 +47,8 @@ from zend.types import (
     VoiceSendResult,
     VoiceUpload,
 )
+from zend.version import VERSION
+from zend.zend import AsyncZend, Zend
 
 __all__ = [
     "APIError",

@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from zend._normalize import normalize_response
+from zend.common.normalize import normalize_response
 
 
 class TestNormalizeResponse:

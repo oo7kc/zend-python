@@ -3,7 +3,7 @@ from __future__ import annotations
 import httpx
 import pytest
 
-from zend._client import HttpClient
+from zend.client.http_client import HttpClient
 
 
 @pytest.fixture

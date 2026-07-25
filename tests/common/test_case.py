@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from datetime import datetime, timezone
 
-from zend._case import to_snake_case
+from zend.common.case import to_snake_case
 
 
 class TestToSnakeCase:

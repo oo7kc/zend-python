@@ -7,7 +7,7 @@ import json
 import httpx
 
 from zend import ApplicationError, TimeoutError
-from zend._client import HttpClient
+from zend.client.http_client import HttpClient
 
 
 def _client(transport: httpx.MockTransport, **kwargs) -> HttpClient:
