@@ -14,6 +14,8 @@ from zend.resources.voice.types import (
 
 
 class Voice:
+    _client: HttpClient
+
     def __init__(self, client: HttpClient) -> None:
         self._client = client
 
@@ -29,12 +31,16 @@ class Voice:
         )
 
     def get(self, batch_id: str) -> ZendResponse[VoiceBatchDetail]:
-        return self._client.request("GET", f"/voice/{batch_id}", cast_to=VoiceBatchDetail)
+        return self._client.request(
+            "GET", f"/voice/{batch_id}", cast_to=VoiceBatchDetail
+        )
 
     def list(
         self, params: ListParams | None = None, **kwargs: Any
     ) -> ZendResponse[VoiceBatchList]:
-        query = ListParams.model_validate(params or kwargs) if (params or kwargs) else None
+        query = (
+            ListParams.model_validate(params or kwargs) if (params or kwargs) else None
+        )
         return self._client.request(
             "GET",
             "/voice",
@@ -42,7 +48,9 @@ class Voice:
             cast_to=VoiceBatchList,
         )
 
-    def upload(self, file: bytes | BinaryIO, filename: str) -> ZendResponse[VoiceUpload]:
+    def upload(
+        self, file: bytes | BinaryIO, filename: str
+    ) -> ZendResponse[VoiceUpload]:
         return self._client.request(
             "POST",
             "/voice/upload",
@@ -52,6 +60,8 @@ class Voice:
 
 
 class AsyncVoice:
+    _client: AsyncHttpClient
+
     def __init__(self, client: AsyncHttpClient) -> None:
         self._client = client
 
@@ -74,7 +84,9 @@ class AsyncVoice:
     async def list(
         self, params: ListParams | None = None, **kwargs: Any
     ) -> ZendResponse[VoiceBatchList]:
-        query = ListParams.model_validate(params or kwargs) if (params or kwargs) else None
+        query = (
+            ListParams.model_validate(params or kwargs) if (params or kwargs) else None
+        )
         return await self._client.request(
             "GET",
             "/voice",

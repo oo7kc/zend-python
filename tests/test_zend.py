@@ -9,12 +9,16 @@ from zend.resources.emails import Emails
 
 
 class TestZend:
-    def test_throws_when_no_api_key_and_none_in_env(self, monkeypatch: pytest.MonkeyPatch) -> None:
+    def test_throws_when_no_api_key_and_none_in_env(
+        self, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
         monkeypatch.delenv("ZEND_API_KEY", raising=False)
         with pytest.raises(ValueError, match="API key is required"):
             Zend()
 
-    def test_reads_api_key_from_env_when_arg_omitted(self, monkeypatch: pytest.MonkeyPatch) -> None:
+    def test_reads_api_key_from_env_when_arg_omitted(
+        self, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
         monkeypatch.setenv("ZEND_API_KEY", "sent_live_env")
         zend = Zend()
         assert isinstance(zend.emails, Emails)

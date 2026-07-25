@@ -10,6 +10,10 @@ class ZendError(Exception):
     transport failures, matching the Node SDK contract.
     """
 
+    name: str
+    status_code: int | None
+    code: str | None
+
     def __init__(
         self,
         message: str,
@@ -89,7 +93,9 @@ class APIError(ZendError):
         status_code: int | None = None,
         code: str | None = None,
     ) -> None:
-        super().__init__(message, name=name or "api_error", status_code=status_code, code=code)
+        super().__init__(
+            message, name=name or "api_error", status_code=status_code, code=code
+        )
 
 
 class BadRequestError(APIError):
@@ -132,7 +138,9 @@ class ZendTimeoutError(ZendError):
         status_code: int | None = None,
         code: str | None = None,
     ) -> None:
-        super().__init__(message, name=name or "timeout", status_code=status_code, code=code)
+        super().__init__(
+            message, name=name or "timeout", status_code=status_code, code=code
+        )
 
 
 class ApplicationError(ZendError):

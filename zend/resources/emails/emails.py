@@ -26,18 +26,20 @@ def _encode_attachments(options: SendEmailOptions) -> dict[str, Any]:
 
 
 class Emails:
+    _client: HttpClient
+
     def __init__(self, client: HttpClient) -> None:
         self._client = client
 
     @overload
-    def send(self, options: SendEmailOptions) -> ZendResponse[Email]:
-        ...
+    def send(self, options: SendEmailOptions) -> ZendResponse[Email]: ...
 
     @overload
-    def send(self, **kwargs: Any) -> ZendResponse[Email]:
-        ...
+    def send(self, **kwargs: Any) -> ZendResponse[Email]: ...
 
-    def send(self, options: SendEmailOptions | None = None, **kwargs: Any) -> ZendResponse[Email]:
+    def send(
+        self, options: SendEmailOptions | None = None, **kwargs: Any
+    ) -> ZendResponse[Email]:
         body = SendEmailOptions.model_validate(options or kwargs)
         return self._client.request(
             "POST",
@@ -50,15 +52,17 @@ class Emails:
         return self._client.request("GET", f"/email/messages/{id}", cast_to=Email)
 
     @overload
-    def list(self, params: ListParams) -> ZendResponse[EmailList]:
-        ...
+    def list(self, params: ListParams) -> ZendResponse[EmailList]: ...
 
     @overload
-    def list(self, **kwargs: Any) -> ZendResponse[EmailList]:
-        ...
+    def list(self, **kwargs: Any) -> ZendResponse[EmailList]: ...
 
-    def list(self, params: ListParams | None = None, **kwargs: Any) -> ZendResponse[EmailList]:
-        query = ListParams.model_validate(params or kwargs) if (params or kwargs) else None
+    def list(
+        self, params: ListParams | None = None, **kwargs: Any
+    ) -> ZendResponse[EmailList]:
+        query = (
+            ListParams.model_validate(params or kwargs) if (params or kwargs) else None
+        )
         return self._client.request(
             "GET",
             "/email/messages",
@@ -68,16 +72,16 @@ class Emails:
 
 
 class AsyncEmails:
+    _client: AsyncHttpClient
+
     def __init__(self, client: AsyncHttpClient) -> None:
         self._client = client
 
     @overload
-    async def send(self, options: SendEmailOptions) -> ZendResponse[Email]:
-        ...
+    async def send(self, options: SendEmailOptions) -> ZendResponse[Email]: ...
 
     @overload
-    async def send(self, **kwargs: Any) -> ZendResponse[Email]:
-        ...
+    async def send(self, **kwargs: Any) -> ZendResponse[Email]: ...
 
     async def send(
         self, options: SendEmailOptions | None = None, **kwargs: Any
@@ -94,17 +98,17 @@ class AsyncEmails:
         return await self._client.request("GET", f"/email/messages/{id}", cast_to=Email)
 
     @overload
-    async def list(self, params: ListParams) -> ZendResponse[EmailList]:
-        ...
+    async def list(self, params: ListParams) -> ZendResponse[EmailList]: ...
 
     @overload
-    async def list(self, **kwargs: Any) -> ZendResponse[EmailList]:
-        ...
+    async def list(self, **kwargs: Any) -> ZendResponse[EmailList]: ...
 
     async def list(
         self, params: ListParams | None = None, **kwargs: Any
     ) -> ZendResponse[EmailList]:
-        query = ListParams.model_validate(params or kwargs) if (params or kwargs) else None
+        query = (
+            ListParams.model_validate(params or kwargs) if (params or kwargs) else None
+        )
         return await self._client.request(
             "GET",
             "/email/messages",

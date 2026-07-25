@@ -28,7 +28,7 @@ def main() -> None:
     print(f"Message {sms.data.id} ({sms.data.status})")
 
     # WhatsApp with a template, falling back to SMS
-    zend.messages.send(
+    _ = zend.messages.send(
         to="+233201234567",
         template_id="welcome",
         template_params={"first_name": "John"},
@@ -38,7 +38,7 @@ def main() -> None:
     )
 
     # Bulk send
-    zend.messages.send_bulk(
+    _ = zend.messages.send_bulk(
         messages=[
             {"to": "+233201234567", "body": "Hi Ama!"},
             {
@@ -69,7 +69,7 @@ def main() -> None:
     print(f"Email {email.data.id} sent")
 
     # Voice — text-to-speech with all options
-    zend.voice.send(
+    _ = zend.voice.send(
         recipients=["+233201234567"],
         text="Your order has shipped.",
         voice="female",
@@ -83,7 +83,7 @@ def main() -> None:
     )
 
     # Voice — a pre-recorded audio file
-    zend.voice.send(
+    _ = zend.voice.send(
         recipients=["+233201234567"],
         voice_url="https://cdn.example.com/message.mp3",
         fallback={"sms": True, "sms_text": "You have a new message."},
@@ -98,7 +98,7 @@ def main() -> None:
     )
     print(f"You have {templates.data.total if templates.data else 0} templates")
 
-    zend.close()
+    _ = zend.close()
 
 
 if __name__ == "__main__":
