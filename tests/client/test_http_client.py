@@ -30,7 +30,9 @@ class TestHttpClientRequest:
             captured["method"] = request.method
             captured["headers"] = dict(request.headers)
             captured["body"] = json.loads(request.content)
-            return httpx.Response(200, json={"estimated_cost": 0.02, "id": "m1", "status": "queued"})
+            return httpx.Response(
+                200, json={"estimated_cost": 0.02, "id": "m1", "status": "queued"}
+            )
 
         client = _client(httpx.MockTransport(handler))
         res = client.request(
@@ -67,7 +69,9 @@ class TestHttpClientRequest:
                 },
             )
 
-        res = _client(httpx.MockTransport(handler)).request("POST", "/messages", json_body={})
+        res = _client(httpx.MockTransport(handler)).request(
+            "POST", "/messages", json_body={}
+        )
         assert res.data is None
         assert res.error is not None
         assert res.error.status_code == 422
@@ -91,7 +95,7 @@ class TestHttpClientRequest:
             captured.append(str(request.url))
             return httpx.Response(200, json={"messages": [], "total": 0})
 
-        _client(httpx.MockTransport(handler)).request(
+        _ = _client(httpx.MockTransport(handler)).request(
             "GET", "/messages", query={"limit": 10, "status": None}
         )
         assert captured[0] == "https://api.test/messages?limit=10"

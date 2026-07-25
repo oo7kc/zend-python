@@ -19,7 +19,7 @@ def _resolve_api_key(api_key: str | None) -> str:
     if not key:
         raise ValueError(
             "Zend: an API key is required. Pass it to `Zend(api_key)` or set the "
-            "ZEND_API_KEY environment variable."
+            + "ZEND_API_KEY environment variable."
         )
     return key
 
@@ -31,6 +31,7 @@ def _resolve_base_url(base_url: str | None) -> str:
 class Zend:
     """Synchronous Zend API client."""
 
+    _client: HttpClient
     emails: Emails
     messages: Messages
     voice: Voice
@@ -70,6 +71,7 @@ class Zend:
 class AsyncZend:
     """Asynchronous Zend API client."""
 
+    _client: AsyncHttpClient
     emails: AsyncEmails
     messages: AsyncMessages
     voice: AsyncVoice

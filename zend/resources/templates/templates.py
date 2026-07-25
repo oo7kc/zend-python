@@ -8,6 +8,8 @@ from zend.resources.templates.types import ListTemplatesParams, Template, Templa
 
 
 class Templates:
+    _client: HttpClient
+
     def __init__(self, client: HttpClient) -> None:
         self._client = client
 
@@ -15,7 +17,9 @@ class Templates:
         self, params: ListTemplatesParams | None = None, **kwargs: Any
     ) -> ZendResponse[TemplateList]:
         query = (
-            ListTemplatesParams.model_validate(params or kwargs) if (params or kwargs) else None
+            ListTemplatesParams.model_validate(params or kwargs)
+            if (params or kwargs)
+            else None
         )
         return self._client.request(
             "GET",
@@ -29,6 +33,8 @@ class Templates:
 
 
 class AsyncTemplates:
+    _client: AsyncHttpClient
+
     def __init__(self, client: AsyncHttpClient) -> None:
         self._client = client
 
@@ -36,7 +42,9 @@ class AsyncTemplates:
         self, params: ListTemplatesParams | None = None, **kwargs: Any
     ) -> ZendResponse[TemplateList]:
         query = (
-            ListTemplatesParams.model_validate(params or kwargs) if (params or kwargs) else None
+            ListTemplatesParams.model_validate(params or kwargs)
+            if (params or kwargs)
+            else None
         )
         return await self._client.request(
             "GET",

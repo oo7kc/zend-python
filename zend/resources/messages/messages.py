@@ -15,16 +15,16 @@ from zend.resources.messages.types import (
 
 
 class Messages:
+    _client: HttpClient
+
     def __init__(self, client: HttpClient) -> None:
         self._client = client
 
     @overload
-    def send(self, options: SendMessageOptions) -> ZendResponse[SendMessageResult]:
-        ...
+    def send(self, options: SendMessageOptions) -> ZendResponse[SendMessageResult]: ...
 
     @overload
-    def send(self, **kwargs: Any) -> ZendResponse[SendMessageResult]:
-        ...
+    def send(self, **kwargs: Any) -> ZendResponse[SendMessageResult]: ...
 
     def send(
         self, options: SendMessageOptions | None = None, **kwargs: Any
@@ -38,12 +38,12 @@ class Messages:
         )
 
     @overload
-    def send_bulk(self, options: BulkMessageOptions) -> ZendResponse[BulkMessageResult]:
-        ...
+    def send_bulk(
+        self, options: BulkMessageOptions
+    ) -> ZendResponse[BulkMessageResult]: ...
 
     @overload
-    def send_bulk(self, **kwargs: Any) -> ZendResponse[BulkMessageResult]:
-        ...
+    def send_bulk(self, **kwargs: Any) -> ZendResponse[BulkMessageResult]: ...
 
     def send_bulk(
         self, options: BulkMessageOptions | None = None, **kwargs: Any
@@ -60,15 +60,17 @@ class Messages:
         return self._client.request("GET", f"/messages/{id}", cast_to=Message)
 
     @overload
-    def list(self, params: ListParams) -> ZendResponse[MessageList]:
-        ...
+    def list(self, params: ListParams) -> ZendResponse[MessageList]: ...
 
     @overload
-    def list(self, **kwargs: Any) -> ZendResponse[MessageList]:
-        ...
+    def list(self, **kwargs: Any) -> ZendResponse[MessageList]: ...
 
-    def list(self, params: ListParams | None = None, **kwargs: Any) -> ZendResponse[MessageList]:
-        query = ListParams.model_validate(params or kwargs) if (params or kwargs) else None
+    def list(
+        self, params: ListParams | None = None, **kwargs: Any
+    ) -> ZendResponse[MessageList]:
+        query = (
+            ListParams.model_validate(params or kwargs) if (params or kwargs) else None
+        )
         return self._client.request(
             "GET",
             "/messages",
@@ -84,16 +86,18 @@ class Messages:
 
 
 class AsyncMessages:
+    _client: AsyncHttpClient
+
     def __init__(self, client: AsyncHttpClient) -> None:
         self._client = client
 
     @overload
-    async def send(self, options: SendMessageOptions) -> ZendResponse[SendMessageResult]:
-        ...
+    async def send(
+        self, options: SendMessageOptions
+    ) -> ZendResponse[SendMessageResult]: ...
 
     @overload
-    async def send(self, **kwargs: Any) -> ZendResponse[SendMessageResult]:
-        ...
+    async def send(self, **kwargs: Any) -> ZendResponse[SendMessageResult]: ...
 
     async def send(
         self, options: SendMessageOptions | None = None, **kwargs: Any
@@ -109,12 +113,10 @@ class AsyncMessages:
     @overload
     async def send_bulk(
         self, options: BulkMessageOptions
-    ) -> ZendResponse[BulkMessageResult]:
-        ...
+    ) -> ZendResponse[BulkMessageResult]: ...
 
     @overload
-    async def send_bulk(self, **kwargs: Any) -> ZendResponse[BulkMessageResult]:
-        ...
+    async def send_bulk(self, **kwargs: Any) -> ZendResponse[BulkMessageResult]: ...
 
     async def send_bulk(
         self, options: BulkMessageOptions | None = None, **kwargs: Any
@@ -131,17 +133,17 @@ class AsyncMessages:
         return await self._client.request("GET", f"/messages/{id}", cast_to=Message)
 
     @overload
-    async def list(self, params: ListParams) -> ZendResponse[MessageList]:
-        ...
+    async def list(self, params: ListParams) -> ZendResponse[MessageList]: ...
 
     @overload
-    async def list(self, **kwargs: Any) -> ZendResponse[MessageList]:
-        ...
+    async def list(self, **kwargs: Any) -> ZendResponse[MessageList]: ...
 
     async def list(
         self, params: ListParams | None = None, **kwargs: Any
     ) -> ZendResponse[MessageList]:
-        query = ListParams.model_validate(params or kwargs) if (params or kwargs) else None
+        query = (
+            ListParams.model_validate(params or kwargs) if (params or kwargs) else None
+        )
         return await self._client.request(
             "GET",
             "/messages",
@@ -150,7 +152,11 @@ class AsyncMessages:
         )
 
     async def cancel(self, id: str) -> ZendResponse[Message]:
-        return await self._client.request("PUT", f"/messages/{id}/cancel", cast_to=Message)
+        return await self._client.request(
+            "PUT", f"/messages/{id}/cancel", cast_to=Message
+        )
 
     async def retry(self, id: str) -> ZendResponse[Message]:
-        return await self._client.request("PUT", f"/messages/{id}/retry", cast_to=Message)
+        return await self._client.request(
+            "PUT", f"/messages/{id}/retry", cast_to=Message
+        )
