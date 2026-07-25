@@ -18,8 +18,7 @@ def _dump_body(body: Any) -> Any:
 
     Pydantic models dump with aliases where set (e.g. ``from_`` → ``from``).
     Nested maps such as ``template_params`` keep caller key casing as-is —
-    Pydantic leaves ``dict[str, Any]`` values untouched (no Node-style
-    ``passThrough`` needed on the Python wire path).
+    Pydantic leaves ``dict[str, Any]`` values untouched.
     """
     if isinstance(body, BaseModel):
         data = body.model_dump(by_alias=True, exclude_none=True)
@@ -45,12 +44,11 @@ def _parse_json(response: httpx.Response) -> Any:
 
 def _cast(data: Any, cast_to: type[T] | TypeAdapter[T] | None) -> T:
     if cast_to is None:
-        return data  # type: ignore[return-value]
+        return data
     if isinstance(cast_to, TypeAdapter):
         return cast_to.validate_python(data)
     if isinstance(cast_to, type) and issubclass(cast_to, BaseModel):
-        return cast_to.model_validate(data)  # type: ignore[return-value]
-    # list[...] / other generics via TypeAdapter
+        return cast_to.model_validate(data)
     return TypeAdapter(cast_to).validate_python(data)
 
 
@@ -135,7 +133,7 @@ class HttpClient:
         normalized = normalize_response(json_body)
         try:
             data = _cast(normalized, cast_to)
-        except Exception as exc:  # noqa: BLE001 — surface as application_error
+        except Exception as exc:  
             return ZendResponse(data=None, error=ApplicationError(str(exc)))
         return ZendResponse(data=data, error=None)
 
@@ -221,6 +219,6 @@ class AsyncHttpClient:
         normalized = normalize_response(json_body)
         try:
             data = _cast(normalized, cast_to)
-        except Exception as exc:  # noqa: BLE001
+        except Exception as exc:
             return ZendResponse(data=None, error=ApplicationError(str(exc)))
         return ZendResponse(data=data, error=None)

@@ -7,7 +7,7 @@ class ZendError(Exception):
     """Base error for all Zend SDK failures.
 
     Returned (not raised) inside :class:`~zend.ZendResponse` for API and
-    transport failures, matching the Node SDK contract.
+    transport failures.
     """
 
     name: str
@@ -44,7 +44,7 @@ class ZendError(Exception):
         text: str,
         status_text: str = "",
     ) -> ZendError:
-        """Build an error from an HTTP error response (mirrors Node HttpClient)."""
+        """Build an error from an HTTP error response."""
         message: str
         error_name = "api_error"
 

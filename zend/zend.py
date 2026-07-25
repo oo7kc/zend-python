@@ -69,7 +69,7 @@ class Zend:
 
 
 class AsyncZend:
-    """Asynchronous Zend API client (experimental development version)."""
+    """Asynchronous Zend API client."""
 
     _client: AsyncHttpClient
     emails: AsyncEmails

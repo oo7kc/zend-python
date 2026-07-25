@@ -8,7 +8,7 @@ from zend.client.http_client import HttpClient
 
 @pytest.fixture
 def make_client():
-    """Build an HttpClient wired to a MockTransport (mirrors Node test helpers)."""
+    """Build an HttpClient wired to a MockTransport (mirrors test helpers)."""
 
     def _make(handler, **kwargs) -> HttpClient:
         return HttpClient(

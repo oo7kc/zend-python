@@ -34,8 +34,6 @@ class TestZend:
 
 
 class TestAsyncZend:
-    """Python-only: Node has a single async facade; we keep parity coverage here."""
-
     @pytest.mark.asyncio
     async def test_async_send_with_respx(self) -> None:
         import httpx

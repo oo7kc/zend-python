@@ -8,10 +8,7 @@ def _is_plain_dict(value: Any) -> bool:
 
 
 def normalize_response(value: Any) -> Any:
-    """Map MongoDB ``_id`` → ``id`` and drop ``__v``, recursively.
-
-    In Python, we use snake_case matching the wire format.
-    """
+    """Map MongoDB ``_id`` → ``id`` and drop ``__v``, recursively."""
     if isinstance(value, list):
         return [normalize_response(v) for v in value]
     if _is_plain_dict(value):

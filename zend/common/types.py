@@ -29,7 +29,7 @@ class ListParams(ZendBaseModel):
 
 @dataclass(frozen=True, slots=True)
 class ZendResponse(Generic[T]):
-    """Result envelope mirroring the Node SDK ``{ data, error }`` contract.
+    """Result envelope contract.
 
     Exactly one of ``data`` / ``error`` is set on a successful parse of a
     transport outcome (API and network failures populate ``error``).

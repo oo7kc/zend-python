@@ -1,7 +1,6 @@
 """Experimental Python client for the Zend messaging platform.
 
-This is a development SDK created for evaluation. It may be integrated into
-the official Zend project ecosystem at a later time. Currently maintained as
+This is a development SDK created for evaluation. Currently maintained as
 a reference implementation.
 """
 
@@ -18,7 +17,12 @@ from zend.client.error import (
     ZendTimeoutError,
 )
 from zend.common.types import ListParams, ZendResponse
-from zend.resources.emails.types import Email, EmailAttachment, EmailList, SendEmailOptions
+from zend.resources.emails.types import (
+    Email,
+    EmailAttachment,
+    EmailList,
+    SendEmailOptions,
+)
 from zend.resources.messages.types import (
     BulkMessageItem,
     BulkMessageOptions,
