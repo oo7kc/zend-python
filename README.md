@@ -1,6 +1,6 @@
 # usezend
 
-> **Note:** This is an experimental Python SDK developed for evaluation. Currently maintained as a development reference.
+> **Note:** This is an Python SDK developed for evaluation. Currently maintained as a development reference.
 
 Python client for the [Zend](https://tryzend.dev) messaging platform. Send SMS, WhatsApp, email, and voice messages — and manage message templates — from a single, typed client.
 
