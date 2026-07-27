@@ -1,7 +1,7 @@
 [project]
 name = "usezend"
 version = "0.1.0"
-description = "Official Python client for the Zend messaging platform"
+description = "Python client for the Zend messaging platform"
 readme = "README.md"
 license = "MIT"
 authors = [{ name = "Zend" }]
