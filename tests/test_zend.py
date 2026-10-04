@@ -9,16 +9,12 @@ from zend.resources.emails import Emails
 
 
 class TestZend:
-    def test_throws_when_no_api_key_and_none_in_env(
-        self, monkeypatch: pytest.MonkeyPatch
-    ) -> None:
+    def test_throws_when_no_api_key_and_none_in_env(self, monkeypatch: pytest.MonkeyPatch) -> None:
         monkeypatch.delenv("ZEND_API_KEY", raising=False)
         with pytest.raises(ValueError, match="API key is required"):
             Zend()
 
-    def test_reads_api_key_from_env_when_arg_omitted(
-        self, monkeypatch: pytest.MonkeyPatch
-    ) -> None:
+    def test_reads_api_key_from_env_when_arg_omitted(self, monkeypatch: pytest.MonkeyPatch) -> None:
         monkeypatch.setenv("ZEND_API_KEY", "sent_live_env")
         zend = Zend()
         assert isinstance(zend.emails, Emails)
@@ -31,6 +27,24 @@ class TestZend:
         assert zend.voice is not None
         assert zend.templates is not None
         zend.close()
+
+    def test_explicit_key_takes_precedence_over_environment(
+        self, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        monkeypatch.setenv("ZEND_API_KEY", "sent_live_env")
+        zend = Zend("sent_live_explicit")
+        try:
+            assert zend._client._client.headers["X-API-Key"] == "sent_live_explicit"
+        finally:
+            zend.close()
+
+    def test_context_manager_closes_http_client(self) -> None:
+        zend = Zend("sent_live_x")
+
+        with zend as entered:
+            assert entered is zend
+
+        assert zend._client._client.is_closed
 
 
 class TestAsyncZend:
@@ -67,3 +81,12 @@ class TestAsyncZend:
             assert res.data is not None
             assert res.data[0].id == "e1"
             assert res.data[0].from_ == "a@b.com"
+
+    @pytest.mark.asyncio
+    async def test_async_context_manager_closes_http_client(self) -> None:
+        zend = AsyncZend("k")
+
+        async with zend as entered:
+            assert entered is zend
+
+        assert zend._client._client.is_closed

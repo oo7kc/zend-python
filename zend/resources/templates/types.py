@@ -3,15 +3,23 @@ from __future__ import annotations
 from typing import Any
 
 from pydantic import AliasChoices, Field
+from typing_extensions import NotRequired, TypedDict
 
-from zend.common.types import ZendBaseModel
+from zend.common.types import ZendRequestModel, ZendResponseModel
+
+
+class ListTemplatesKwargs(TypedDict):
+    category: NotRequired[str | None]
+    status: NotRequired[str | None]
+    limit: NotRequired[int | None]
+    offset: NotRequired[int | None]
 
 
 def _alias(*names: str) -> AliasChoices:
     return AliasChoices(*names)
 
 
-class TemplateVariable(ZendBaseModel):
+class TemplateVariable(ZendResponseModel):
     name: str
     type: str
     default_value: str | None = Field(
@@ -21,7 +29,7 @@ class TemplateVariable(ZendBaseModel):
     required: bool | None = None
 
 
-class TemplateChannelVariant(ZendBaseModel):
+class TemplateChannelVariant(ZendResponseModel):
     channel: str
     content: str
     media_url: str | None = Field(
@@ -36,7 +44,7 @@ class TemplateChannelVariant(ZendBaseModel):
     footer: str | None = None
 
 
-class Template(ZendBaseModel):
+class Template(ZendResponseModel):
     id: str
     name: str
     description: str | None = None
@@ -70,12 +78,12 @@ class Template(ZendBaseModel):
     )
 
 
-class TemplateList(ZendBaseModel):
+class TemplateList(ZendResponseModel):
     templates: list[Template]
     total: int
 
 
-class ListTemplatesParams(ZendBaseModel):
+class ListTemplatesParams(ZendRequestModel):
     category: str | None = None
     status: str | None = None
     limit: int | None = None

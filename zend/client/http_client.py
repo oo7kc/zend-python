@@ -7,7 +7,7 @@ from pydantic import BaseModel, TypeAdapter
 
 from zend.client.error import ApplicationError, ZendError, ZendTimeoutError
 from zend.common.normalize import normalize_response
-from zend.common.types import ZendResponse
+from zend.common.types import ZendFailure, ZendResponse, ZendSuccess
 from zend.version import VERSION
 
 T = TypeVar("T")
@@ -27,8 +27,6 @@ def _dump_body(body: Any) -> Any:
     else:
         return body
 
-    if "from_" in data and "from" not in data:
-        data["from"] = data.pop("from_")
     return data
 
 
@@ -50,6 +48,30 @@ def _cast(data: Any, cast_to: type[T] | TypeAdapter[T] | None) -> T:
     if isinstance(cast_to, type) and issubclass(cast_to, BaseModel):
         return cast_to.model_validate(data)
     return TypeAdapter(cast_to).validate_python(data)
+
+
+def _handle_response(
+    response: httpx.Response,
+    cast_to: type[T] | TypeAdapter[T] | None,
+) -> ZendResponse[T]:
+    json_body = _parse_json(response)
+
+    if not 200 <= response.status_code < 300:
+        return ZendFailure(
+            error=ZendError.from_http(
+                response.status_code,
+                json_body,
+                response.text,
+                response.reason_phrase,
+            )
+        )
+
+    normalized = normalize_response(json_body)
+    try:
+        data = _cast(normalized, cast_to)
+    except (TypeError, ValueError) as exc:
+        return ZendFailure(error=ApplicationError(str(exc)))
+    return ZendSuccess(data=data)
 
 
 class HttpClient:
@@ -101,41 +123,13 @@ class HttpClient:
         try:
             response = self._client.request(**kwargs)
         except httpx.TimeoutException:
-            return ZendResponse(
-                data=None,
-                error=ZendTimeoutError(
-                    f"Request timed out after {int(self._timeout * 1000)}ms"
-                ),
+            return ZendFailure(
+                error=ZendTimeoutError(f"Request timed out after {int(self._timeout * 1000)}ms"),
             )
         except httpx.HTTPError as exc:
-            return ZendResponse(data=None, error=ApplicationError(str(exc)))
+            return ZendFailure(error=ApplicationError(str(exc)))
 
-        return self._handle_response(response, cast_to)
-
-    def _handle_response(
-        self,
-        response: httpx.Response,
-        cast_to: type[T] | TypeAdapter[T] | None,
-    ) -> ZendResponse[T]:
-        json_body = _parse_json(response)
-
-        if response.is_error:
-            return ZendResponse(
-                data=None,
-                error=ZendError.from_http(
-                    response.status_code,
-                    json_body,
-                    response.text,
-                    response.reason_phrase,
-                ),
-            )
-
-        normalized = normalize_response(json_body)
-        try:
-            data = _cast(normalized, cast_to)
-        except Exception as exc:  
-            return ZendResponse(data=None, error=ApplicationError(str(exc)))
-        return ZendResponse(data=data, error=None)
+        return _handle_response(response, cast_to)
 
 
 class AsyncHttpClient:
@@ -187,38 +181,10 @@ class AsyncHttpClient:
         try:
             response = await self._client.request(**kwargs)
         except httpx.TimeoutException:
-            return ZendResponse(
-                data=None,
-                error=ZendTimeoutError(
-                    f"Request timed out after {int(self._timeout * 1000)}ms"
-                ),
+            return ZendFailure(
+                error=ZendTimeoutError(f"Request timed out after {int(self._timeout * 1000)}ms"),
             )
         except httpx.HTTPError as exc:
-            return ZendResponse(data=None, error=ApplicationError(str(exc)))
+            return ZendFailure(error=ApplicationError(str(exc)))
 
-        return self._handle_response(response, cast_to)
-
-    def _handle_response(
-        self,
-        response: httpx.Response,
-        cast_to: type[T] | TypeAdapter[T] | None,
-    ) -> ZendResponse[T]:
-        json_body = _parse_json(response)
-
-        if response.is_error:
-            return ZendResponse(
-                data=None,
-                error=ZendError.from_http(
-                    response.status_code,
-                    json_body,
-                    response.text,
-                    response.reason_phrase,
-                ),
-            )
-
-        normalized = normalize_response(json_body)
-        try:
-            data = _cast(normalized, cast_to)
-        except Exception as exc:
-            return ZendResponse(data=None, error=ApplicationError(str(exc)))
-        return ZendResponse(data=data, error=None)
+        return _handle_response(response, cast_to)

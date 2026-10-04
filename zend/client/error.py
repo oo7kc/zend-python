@@ -6,8 +6,8 @@ from typing import Any
 class ZendError(Exception):
     """Base error for all Zend SDK failures.
 
-    Returned (not raised) inside :class:`~zend.ZendResponse` for API and
-    transport failures.
+    Returned (not raised) inside a ``ZendResponse`` for API and transport
+    failures.
     """
 
     name: str
@@ -63,23 +63,38 @@ class ZendError(Exception):
         else:
             message = text or status_text or "Request failed"
 
-        return cls._for_status(message, name=error_name, status_code=status_code)
+        raw_code = json_body.get("code") if isinstance(json_body, dict) else None
+        code = str(raw_code) if raw_code is not None else None
+
+        return cls._for_status(
+            message,
+            name=error_name,
+            status_code=status_code,
+            code=code,
+        )
 
     @classmethod
-    def _for_status(cls, message: str, *, name: str, status_code: int) -> ZendError:
+    def _for_status(
+        cls,
+        message: str,
+        *,
+        name: str,
+        status_code: int,
+        code: str | None = None,
+    ) -> ZendError:
         if status_code == 400:
-            return BadRequestError(message, name=name, status_code=status_code)
+            return BadRequestError(message, name=name, status_code=status_code, code=code)
         if status_code == 401:
-            return AuthenticationError(message, name=name, status_code=status_code)
+            return AuthenticationError(message, name=name, status_code=status_code, code=code)
         if status_code == 403:
-            return PermissionDeniedError(message, name=name, status_code=status_code)
+            return PermissionDeniedError(message, name=name, status_code=status_code, code=code)
         if status_code == 404:
-            return NotFoundError(message, name=name, status_code=status_code)
+            return NotFoundError(message, name=name, status_code=status_code, code=code)
         if status_code == 429:
-            return RateLimitError(message, name=name, status_code=status_code)
+            return RateLimitError(message, name=name, status_code=status_code, code=code)
         if status_code >= 500:
-            return ServerError(message, name=name, status_code=status_code)
-        return APIError(message, name=name, status_code=status_code)
+            return ServerError(message, name=name, status_code=status_code, code=code)
+        return APIError(message, name=name, status_code=status_code, code=code)
 
 
 class APIError(ZendError):
@@ -93,9 +108,7 @@ class APIError(ZendError):
         status_code: int | None = None,
         code: str | None = None,
     ) -> None:
-        super().__init__(
-            message, name=name or "api_error", status_code=status_code, code=code
-        )
+        super().__init__(message, name=name or "api_error", status_code=status_code, code=code)
 
 
 class BadRequestError(APIError):
@@ -108,8 +121,6 @@ class AuthenticationError(APIError):
 
 class PermissionDeniedError(APIError):
     """403 Forbidden — named to avoid shadowing the builtin PermissionError."""
-
-    pass
 
 
 class NotFoundError(APIError):
@@ -138,9 +149,7 @@ class ZendTimeoutError(ZendError):
         status_code: int | None = None,
         code: str | None = None,
     ) -> None:
-        super().__init__(
-            message, name=name or "timeout", status_code=status_code, code=code
-        )
+        super().__init__(message, name=name or "timeout", status_code=status_code, code=code)
 
 
 class ApplicationError(ZendError):

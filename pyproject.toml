@@ -1,28 +1,33 @@
 [project]
 name = "usezend"
-version = "0.1.0"
-description = "Python client for the Zend messaging platform"
+dynamic = ["version"]
+description = "Unofficial Python client for the Zend messaging platform"
 readme = "README.md"
 license = "MIT"
-authors = [{ name = "Zend" }]
+authors = [{ name = "kcnewman" }]
 requires-python = ">=3.10"
 keywords = ["zend", "sms", "whatsapp", "voice", "email", "otp", "messaging", "sdk"]
 dependencies = [
     "httpx>=0.27",
     "pydantic>=2.0",
+    "typing-extensions>=4.7",
 ]
 
 [project.urls]
-Homepage = "https://github.com/usezend/zend-python"
+Homepage = "https://github.com/oo7kc/zend-python"
 Documentation = "https://tryzend.com/docs"
-Repository = "https://github.com/usezend/zend-python"
-Issues = "https://github.com/usezend/zend-python/issues"
+Repository = "https://github.com/oo7kc/zend-python"
+Issues = "https://github.com/oo7kc/zend-python/issues"
 
 [project.optional-dependencies]
 dev = [
     "pytest>=8.0",
     "pytest-asyncio>=0.24",
     "respx>=0.21",
+    "basedpyright>=1.39",
+    "build>=1.2",
+    "ruff>=0.15",
+    "twine>=5.0",
 ]
 
 [build-system]
@@ -32,6 +37,17 @@ build-backend = "hatchling.build"
 [tool.hatch.build.targets.wheel]
 packages = ["zend"]
 
+[tool.hatch.build.targets.sdist]
+include = [
+    "/LICENSE",
+    "/README.md",
+    "/pyproject.toml",
+    "/zend",
+]
+
+[tool.hatch.version]
+path = "zend/version.py"
+
 [tool.pytest.ini_options]
 asyncio_mode = "auto"
 testpaths = ["tests"]
@@ -39,3 +55,8 @@ testpaths = ["tests"]
 [tool.ruff]
 line-length = 100
 target-version = "py310"
+
+[tool.basedpyright]
+include = ["zend", "examples"]
+pythonVersion = "3.10"
+typeCheckingMode = "standard"

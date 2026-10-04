@@ -6,9 +6,12 @@ import json
 from typing import Any
 
 import httpx
+import pytest
+from pydantic import ValidationError
 
 from zend.client.http_client import HttpClient
 from zend.resources.messages import Messages
+from zend.resources.messages.types import SendMessageOptions
 
 
 def _client(handler) -> HttpClient:
@@ -56,6 +59,74 @@ class TestMessages:
 
         Messages(_client(handler)).cancel("m1")
         assert captured[0] == ("PUT", "https://api.test/messages/m1/cancel")
+
+    def test_send_bulk_serializes_nested_items(self) -> None:
+        captured: dict[str, Any] = {}
+
+        def handler(request: httpx.Request) -> httpx.Response:
+            captured["body"] = json.loads(request.content)
+            return httpx.Response(200, json={"total": 1, "queued": 1})
+
+        res = Messages(_client(handler)).send_bulk(
+            messages=[
+                {
+                    "to": "+233201234567",
+                    "body": "Hi",
+                    "template_params": {"firstName": "Ama"},
+                }
+            ],
+            preferred_channels=["sms"],
+        )
+
+        assert res.error is None
+        assert captured["body"] == {
+            "messages": [
+                {
+                    "to": "+233201234567",
+                    "body": "Hi",
+                    "template_params": {"firstName": "Ama"},
+                }
+            ],
+            "preferred_channels": ["sms"],
+        }
+
+    def test_unknown_keyword_is_rejected_instead_of_dropped(self) -> None:
+        with pytest.raises(ValidationError, match="sender_idd"):
+            Messages(_client(lambda request: httpx.Response(200))).send(
+                to="+233201234567",
+                body="Hi",
+                sender_idd="Brand",  # type: ignore[call-overload]
+            )
+
+    def test_options_and_keyword_arguments_cannot_be_mixed(self) -> None:
+        options = SendMessageOptions(to="+233201234567", body="original")
+
+        with pytest.raises(TypeError, match="not both"):
+            Messages(_client(lambda request: httpx.Response(200))).send(
+                options,
+                body="override",  # type: ignore[call-overload]
+            )
+
+    def test_get_percent_encodes_opaque_id(self) -> None:
+        captured: list[str] = []
+
+        def handler(request: httpx.Request) -> httpx.Response:
+            captured.append(str(request.url))
+            return httpx.Response(200, json={"id": "m1", "status": "queued"})
+
+        Messages(_client(handler)).get("abc?admin=true/child")
+
+        assert captured[0] == ("https://api.test/messages/abc%3Fadmin%3Dtrue%2Fchild")
+
+    def test_unknown_response_status_is_preserved(self) -> None:
+        def handler(request: httpx.Request) -> httpx.Response:
+            return httpx.Response(200, json={"id": "m1", "status": "paused"})
+
+        res = Messages(_client(handler)).get("m1")
+
+        assert res.error is None
+        assert res.data is not None
+        assert res.data.status == "paused"
 
     def test_get_returns_full_message_record_normalized(self) -> None:
         def handler(request: httpx.Request) -> httpx.Response:

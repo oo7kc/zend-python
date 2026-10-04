@@ -7,7 +7,7 @@ from typing import Any
 
 import httpx
 
-from zend import ApplicationError, ZendTimeoutError
+from zend import APIError, ApplicationError, ZendTimeoutError
 from zend.client.http_client import HttpClient
 
 
@@ -69,14 +69,38 @@ class TestHttpClientRequest:
                 },
             )
 
-        res = _client(httpx.MockTransport(handler)).request(
-            "POST", "/messages", json_body={}
-        )
+        res = _client(httpx.MockTransport(handler)).request("POST", "/messages", json_body={})
         assert res.data is None
         assert res.error is not None
         assert res.error.status_code == 422
         assert str(res.error) == "Invalid recipient"
         assert res.error.name == "validation_error"
+
+    def test_maps_redirect_to_api_error_instead_of_success(self) -> None:
+        def handler(request: httpx.Request) -> httpx.Response:
+            return httpx.Response(302, json={"id": "m1", "status": "queued"})
+
+        res = _client(httpx.MockTransport(handler)).request("GET", "/messages/m1", cast_to=dict)
+
+        assert res.data is None
+        assert isinstance(res.error, APIError)
+        assert res.error.status_code == 302
+
+    def test_preserves_provider_error_code(self) -> None:
+        def handler(request: httpx.Request) -> httpx.Response:
+            return httpx.Response(
+                400,
+                json={
+                    "message": "Invalid recipient",
+                    "error": "validation_error",
+                    "code": "recipient_invalid",
+                },
+            )
+
+        res = _client(httpx.MockTransport(handler)).request("POST", "/messages")
+
+        assert res.error is not None
+        assert res.error.code == "recipient_invalid"
 
     def test_application_error_on_transport_failure(self) -> None:
         def handler(request: httpx.Request) -> httpx.Response:
@@ -134,9 +158,7 @@ class TestHttpClientRequest:
                 },
             )
 
-        res = _client(httpx.MockTransport(handler)).request(
-            "POST", "/email/send", cast_to=dict
-        )
+        res = _client(httpx.MockTransport(handler)).request("POST", "/email/send", cast_to=dict)
         assert res.error is None
         assert res.data is not None
         assert isinstance(res.data, dict)
@@ -150,3 +172,12 @@ class TestHttpClientRequest:
         }
         assert "_id" not in data
         assert "__v" not in data
+
+    def test_malformed_success_body_is_an_application_error(self) -> None:
+        def handler(request: httpx.Request) -> httpx.Response:
+            return httpx.Response(200, text="not json")
+
+        res = _client(httpx.MockTransport(handler)).request("GET", "/messages/m1", cast_to=dict)
+
+        assert res.data is None
+        assert isinstance(res.error, ApplicationError)

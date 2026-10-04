@@ -3,15 +3,22 @@ from __future__ import annotations
 import base64
 from typing import Any, overload
 
+from typing_extensions import Unpack
+
 from zend.client.http_client import AsyncHttpClient, HttpClient
-from zend.common.types import ListParams, ZendResponse
-from zend.resources.emails.types import Email, EmailList, SendEmailOptions
+from zend.common.types import ListParams, ListParamsKwargs, ZendResponse
+from zend.common.url import path_segment
+from zend.common.validation import resolve_optional_options, resolve_options
+from zend.resources.emails.types import (
+    Email,
+    EmailList,
+    SendEmailKwargs,
+    SendEmailOptions,
+)
 
 
 def _encode_attachments(options: SendEmailOptions) -> dict[str, Any]:
     data = options.model_dump(by_alias=True, exclude_none=True)
-    if "from_" in data and "from" not in data:
-        data["from"] = data.pop("from_")
     attachments = data.get("attachments")
     if not attachments:
         return data
@@ -35,12 +42,10 @@ class Emails:
     def send(self, options: SendEmailOptions) -> ZendResponse[Email]: ...
 
     @overload
-    def send(self, **kwargs: Any) -> ZendResponse[Email]: ...
+    def send(self, **kwargs: Unpack[SendEmailKwargs]) -> ZendResponse[Email]: ...
 
-    def send(
-        self, options: SendEmailOptions | None = None, **kwargs: Any
-    ) -> ZendResponse[Email]:
-        body = SendEmailOptions.model_validate(options or kwargs)
+    def send(self, options: SendEmailOptions | None = None, **kwargs: Any) -> ZendResponse[Email]:
+        body = resolve_options(SendEmailOptions, options, kwargs)
         return self._client.request(
             "POST",
             "/email/send",
@@ -49,20 +54,16 @@ class Emails:
         )
 
     def get(self, id: str) -> ZendResponse[Email]:
-        return self._client.request("GET", f"/email/messages/{id}", cast_to=Email)
+        return self._client.request("GET", f"/email/messages/{path_segment(id)}", cast_to=Email)
 
     @overload
     def list(self, params: ListParams) -> ZendResponse[EmailList]: ...
 
     @overload
-    def list(self, **kwargs: Any) -> ZendResponse[EmailList]: ...
+    def list(self, **kwargs: Unpack[ListParamsKwargs]) -> ZendResponse[EmailList]: ...
 
-    def list(
-        self, params: ListParams | None = None, **kwargs: Any
-    ) -> ZendResponse[EmailList]:
-        query = (
-            ListParams.model_validate(params or kwargs) if (params or kwargs) else None
-        )
+    def list(self, params: ListParams | None = None, **kwargs: Any) -> ZendResponse[EmailList]:
+        query = resolve_optional_options(ListParams, params, kwargs)
         return self._client.request(
             "GET",
             "/email/messages",
@@ -81,12 +82,12 @@ class AsyncEmails:
     async def send(self, options: SendEmailOptions) -> ZendResponse[Email]: ...
 
     @overload
-    async def send(self, **kwargs: Any) -> ZendResponse[Email]: ...
+    async def send(self, **kwargs: Unpack[SendEmailKwargs]) -> ZendResponse[Email]: ...
 
     async def send(
         self, options: SendEmailOptions | None = None, **kwargs: Any
     ) -> ZendResponse[Email]:
-        body = SendEmailOptions.model_validate(options or kwargs)
+        body = resolve_options(SendEmailOptions, options, kwargs)
         return await self._client.request(
             "POST",
             "/email/send",
@@ -95,20 +96,20 @@ class AsyncEmails:
         )
 
     async def get(self, id: str) -> ZendResponse[Email]:
-        return await self._client.request("GET", f"/email/messages/{id}", cast_to=Email)
+        return await self._client.request(
+            "GET", f"/email/messages/{path_segment(id)}", cast_to=Email
+        )
 
     @overload
     async def list(self, params: ListParams) -> ZendResponse[EmailList]: ...
 
     @overload
-    async def list(self, **kwargs: Any) -> ZendResponse[EmailList]: ...
+    async def list(self, **kwargs: Unpack[ListParamsKwargs]) -> ZendResponse[EmailList]: ...
 
     async def list(
         self, params: ListParams | None = None, **kwargs: Any
     ) -> ZendResponse[EmailList]:
-        query = (
-            ListParams.model_validate(params or kwargs) if (params or kwargs) else None
-        )
+        query = resolve_optional_options(ListParams, params, kwargs)
         return await self._client.request(
             "GET",
             "/email/messages",

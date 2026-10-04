@@ -3,8 +3,9 @@ from __future__ import annotations
 from typing import Any, Literal
 
 from pydantic import AliasChoices, Field
+from typing_extensions import NotRequired, Required, TypedDict
 
-from zend.common.types import ZendBaseModel
+from zend.common.types import ZendRequestModel, ZendResponseModel
 
 Channel = Literal["sms", "whatsapp"]
 MessageStatus = Literal[
@@ -20,11 +21,42 @@ Priority = Literal["low", "normal", "high", "urgent"]
 DeliveryPriority = Literal["cost", "speed", "reliability"]
 
 
+class SendMessageKwargs(TypedDict):
+    to: Required[str]
+    body: NotRequired[str | None]
+    preferred_channels: NotRequired[list[Channel] | None]
+    template_id: NotRequired[str | None]
+    template_params: NotRequired[dict[str, Any] | None]
+    sender_id: NotRequired[str | None]
+    scheduled_for: NotRequired[str | None]
+    fallback_enabled: NotRequired[bool | None]
+    webhook_url: NotRequired[str | None]
+    priority: NotRequired[Priority | None]
+    delivery_priority: NotRequired[DeliveryPriority | None]
+
+
+class BulkMessageItemInput(TypedDict):
+    to: Required[str]
+    body: Required[str]
+    template_params: NotRequired[dict[str, Any] | None]
+    campaign_id: NotRequired[str | None]
+
+
+class BulkMessageKwargs(TypedDict):
+    messages: Required[list[BulkMessageItem | BulkMessageItemInput]]
+    preferred_channels: NotRequired[list[Channel] | None]
+    template_id: NotRequired[str | None]
+    fallback_enabled: NotRequired[bool | None]
+    delivery_priority: NotRequired[DeliveryPriority | None]
+    webhook_url: NotRequired[str | None]
+    sender_id: NotRequired[str | None]
+
+
 def _alias(*names: str) -> AliasChoices:
     return AliasChoices(*names)
 
 
-class SendMessageOptions(ZendBaseModel):
+class SendMessageOptions(ZendRequestModel):
     to: str
     body: str | None = None
     preferred_channels: list[Channel] | None = Field(
@@ -62,7 +94,7 @@ class SendMessageOptions(ZendBaseModel):
     )
 
 
-class BulkMessageItem(ZendBaseModel):
+class BulkMessageItem(ZendRequestModel):
     to: str
     body: str
     template_params: dict[str, Any] | None = Field(
@@ -75,7 +107,7 @@ class BulkMessageItem(ZendBaseModel):
     )
 
 
-class BulkMessageOptions(ZendBaseModel):
+class BulkMessageOptions(ZendRequestModel):
     messages: list[BulkMessageItem]
     preferred_channels: list[Channel] | None = Field(
         default=None,
@@ -103,9 +135,9 @@ class BulkMessageOptions(ZendBaseModel):
     )
 
 
-class SendMessageResult(ZendBaseModel):
+class SendMessageResult(ZendResponseModel):
     id: str
-    status: MessageStatus
+    status: str
     estimated_cost: float | None = Field(
         default=None,
         validation_alias=_alias("estimated_cost", "estimatedCost"),
@@ -113,8 +145,8 @@ class SendMessageResult(ZendBaseModel):
     message: str | None = None
 
 
-class DeliveryAttempt(ZendBaseModel):
-    channel: Channel
+class DeliveryAttempt(ZendResponseModel):
+    channel: str
     status: str
     attempted_at: str | None = Field(
         default=None,
@@ -127,10 +159,10 @@ class DeliveryAttempt(ZendBaseModel):
     )
 
 
-class Message(ZendBaseModel):
+class Message(ZendResponseModel):
     id: str
-    status: MessageStatus
-    channel_used: Channel | None = Field(
+    status: str
+    channel_used: str | None = Field(
         default=None,
         validation_alias=_alias("channel_used", "channelUsed"),
     )
@@ -158,14 +190,14 @@ class Message(ZendBaseModel):
     )
 
 
-class MessageList(ZendBaseModel):
+class MessageList(ZendResponseModel):
     messages: list[Message]
     total: int
     page: int | None = None
     pages: int | None = None
 
 
-class BulkMessageResult(ZendBaseModel):
+class BulkMessageResult(ZendResponseModel):
     total: int | None = None
     queued: int | None = None
     messages: list[SendMessageResult] | None = None

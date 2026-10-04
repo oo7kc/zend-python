@@ -3,17 +3,34 @@ from __future__ import annotations
 from typing import Literal
 
 from pydantic import AliasChoices, Field
+from typing_extensions import NotRequired, Required, TypedDict
 
-from zend.common.types import ZendBaseModel
+from zend.common.types import ZendRequestModel, ZendResponseModel
 
 VoiceGender = Literal["female", "male"]
+
+
+class VoiceFallbackInput(TypedDict):
+    sms: Required[bool]
+    sms_text: NotRequired[str | None]
+    sender_id: NotRequired[str | None]
+
+
+class SendVoiceKwargs(TypedDict):
+    recipients: Required[list[str]]
+    text: NotRequired[str | None]
+    voice_url: NotRequired[str | None]
+    voice: NotRequired[VoiceGender | None]
+    retry: NotRequired[bool | None]
+    callback_url: NotRequired[str | None]
+    fallback: NotRequired[VoiceFallback | VoiceFallbackInput | None]
 
 
 def _alias(*names: str) -> AliasChoices:
     return AliasChoices(*names)
 
 
-class VoiceFallback(ZendBaseModel):
+class VoiceFallback(ZendRequestModel):
     sms: bool
     sms_text: str | None = Field(
         default=None,
@@ -25,7 +42,7 @@ class VoiceFallback(ZendBaseModel):
     )
 
 
-class SendVoiceOptions(ZendBaseModel):
+class SendVoiceOptions(ZendRequestModel):
     recipients: list[str]
     text: str | None = None
     voice_url: str | None = Field(
@@ -41,7 +58,7 @@ class SendVoiceOptions(ZendBaseModel):
     fallback: VoiceFallback | None = None
 
 
-class VoiceSendResult(ZendBaseModel):
+class VoiceSendResult(ZendResponseModel):
     batch_id: str = Field(validation_alias=_alias("batch_id", "batchId"))
     recipients: int
     message_ids: list[str] = Field(validation_alias=_alias("message_ids", "messageIds"))
@@ -52,7 +69,7 @@ class VoiceSendResult(ZendBaseModel):
     )
 
 
-class VoiceCounts(ZendBaseModel):
+class VoiceCounts(ZendResponseModel):
     total: int
     answered: int
     no_answer: int = Field(validation_alias=_alias("no_answer", "noAnswer"))
@@ -61,11 +78,11 @@ class VoiceCounts(ZendBaseModel):
     fallback_sent: int = Field(validation_alias=_alias("fallback_sent", "fallbackSent"))
 
 
-class VoiceBatch(ZendBaseModel):
+class VoiceBatch(ZendResponseModel):
     batch_id: str = Field(validation_alias=_alias("batch_id", "batchId"))
     source: str | None = None
     text: str | None = None
-    voice: VoiceGender | None = None
+    voice: str | None = None
     audio_url: str | None = Field(
         default=None,
         validation_alias=_alias("audio_url", "audioUrl"),
@@ -90,7 +107,7 @@ class VoiceBatch(ZendBaseModel):
     )
 
 
-class VoiceRecipient(ZendBaseModel):
+class VoiceRecipient(ZendResponseModel):
     id: str
     to: str
     status: str
@@ -108,17 +125,17 @@ class VoiceRecipient(ZendBaseModel):
     )
 
 
-class VoiceBatchDetail(ZendBaseModel):
+class VoiceBatchDetail(ZendResponseModel):
     batch: VoiceBatch
     recipients: list[VoiceRecipient]
 
 
-class VoiceBatchList(ZendBaseModel):
+class VoiceBatchList(ZendResponseModel):
     batches: list[VoiceBatch]
     total: int
     page: int | None = None
     limit: int | None = None
 
 
-class VoiceUpload(ZendBaseModel):
+class VoiceUpload(ZendResponseModel):
     url: str

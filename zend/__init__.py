@@ -1,8 +1,4 @@
-"""Experimental Python client for the Zend messaging platform.
-
-This is a development SDK created for evaluation. Currently maintained as
-a reference implementation.
-"""
+"""Unofficial Python client for the Zend messaging platform."""
 
 from zend.client.error import (
     APIError,
@@ -16,7 +12,13 @@ from zend.client.error import (
     ZendError,
     ZendTimeoutError,
 )
-from zend.common.types import ListParams, ZendResponse
+from zend.common.types import (
+    ListParams,
+    ZendFailure,
+    ZendResponse,
+    ZendSuccess,
+    is_success,
+)
 from zend.resources.emails.types import (
     Email,
     EmailAttachment,
@@ -56,10 +58,11 @@ from zend.resources.voice.types import (
     VoiceSendResult,
     VoiceUpload,
 )
-from zend.version import VERSION
+from zend.version import VERSION, __version__
 from zend.zend import AsyncZend, Zend
 
 __all__ = [
+    "VERSION",
     "APIError",
     "ApplicationError",
     "AsyncZend",
@@ -92,7 +95,6 @@ __all__ = [
     "TemplateChannelVariant",
     "TemplateList",
     "TemplateVariable",
-    "VERSION",
     "VoiceBatch",
     "VoiceBatchDetail",
     "VoiceBatchList",
@@ -104,6 +106,10 @@ __all__ = [
     "VoiceUpload",
     "Zend",
     "ZendError",
+    "ZendFailure",
     "ZendResponse",
+    "ZendSuccess",
     "ZendTimeoutError",
+    "__version__",
+    "is_success",
 ]

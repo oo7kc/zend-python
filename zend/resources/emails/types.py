@@ -1,11 +1,27 @@
 from __future__ import annotations
 
 from pydantic import AliasChoices, Field
+from typing_extensions import NotRequired, Required, TypedDict
 
-from zend.common.types import ZendBaseModel
+from zend.common.types import ZendRequestModel, ZendResponseModel
 
 
-class EmailAttachment(ZendBaseModel):
+class EmailAttachmentInput(TypedDict):
+    filename: Required[str]
+    content: Required[bytes | str]
+    content_type: NotRequired[str | None]
+
+
+class SendEmailKwargs(TypedDict):
+    from_: Required[str]
+    to: Required[str]
+    subject: Required[str]
+    html: Required[str]
+    text: NotRequired[str | None]
+    attachments: NotRequired[list[EmailAttachment | EmailAttachmentInput] | None]
+
+
+class EmailAttachment(ZendRequestModel):
     """File attachment. ``content`` is raw bytes or a base64-encoded string."""
 
     filename: str
@@ -16,7 +32,7 @@ class EmailAttachment(ZendBaseModel):
     )
 
 
-class SendEmailOptions(ZendBaseModel):
+class SendEmailOptions(ZendRequestModel):
     from_: str = Field(
         validation_alias=AliasChoices("from", "from_"),
         serialization_alias="from",
@@ -28,7 +44,7 @@ class SendEmailOptions(ZendBaseModel):
     attachments: list[EmailAttachment] | None = None
 
 
-class Email(ZendBaseModel):
+class Email(ZendResponseModel):
     id: str
     status: str | None = None
     from_: str | None = Field(

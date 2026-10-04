@@ -2,9 +2,9 @@ from __future__ import annotations
 
 import os
 from collections.abc import Mapping
-from typing import Any
 
 import httpx
+from typing_extensions import Self
 
 from zend.client.http_client import AsyncHttpClient, HttpClient
 from zend.common.constants import DEFAULT_BASE_URL, DEFAULT_TIMEOUT
@@ -29,7 +29,7 @@ def _resolve_base_url(base_url: str | None) -> str:
 
 
 class Zend:
-    """Synchronous Zend API client (experimental development version)."""
+    """Synchronous client for Zend's API (unofficial implementation)."""
 
     _client: HttpClient
     emails: Emails
@@ -61,15 +61,15 @@ class Zend:
     def close(self) -> None:
         self._client.close()
 
-    def __enter__(self) -> Zend:
+    def __enter__(self) -> Self:
         return self
 
-    def __exit__(self, *args: Any) -> None:
+    def __exit__(self, *args: object) -> None:
         self.close()
 
 
 class AsyncZend:
-    """Asynchronous Zend API client."""
+    """Asynchronous client for Zend's API (unofficial implementation)."""
 
     _client: AsyncHttpClient
     emails: AsyncEmails
@@ -101,8 +101,8 @@ class AsyncZend:
     async def aclose(self) -> None:
         await self._client.aclose()
 
-    async def __aenter__(self) -> AsyncZend:
+    async def __aenter__(self) -> Self:
         return self
 
-    async def __aexit__(self, *args: Any) -> None:
+    async def __aexit__(self, *args: object) -> None:
         await self.aclose()
